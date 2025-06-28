@@ -67,7 +67,7 @@ const AdminLayout=()=>{
                     menus.map((item,index)=>(
                         <button key={index} onClick={()=>onMobileNavigate(item.href)}
                         style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-                        className="shadow-2xl py-3 font-semibold  hover:bg-red-500 hover:text-white"
+                        className="shadow-2xl py-3 font-semibold hover:text-white"
                         >{item.label}</button>
                     ))
                 }
@@ -119,7 +119,7 @@ const AdminLayout=()=>{
                         >
                             <Link to={item.href} 
                             style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-                            className="block h-full w-full py-3  font-semibold  hover:bg-red-500 hover:text-white"
+                            className="block h-full w-full py-3  font-semibold hover:text-white"
                              >{item.label}
                              </Link>
                         </button>
