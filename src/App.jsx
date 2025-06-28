@@ -7,6 +7,9 @@ import Signup from "./components/Signup"
 import AdminLayout from "./components/Admin/AdminLayout"
 import Home from "./components/Home"
 import NotFound from "./components/NotFound"
+import Dashboard from "./components/Admin/Dashboard"
+import Settings from "./components/Admin/Settings"
+import Ebook from "./components/Admin/Ebook"
 
 const App=()=>{
   return(
@@ -14,7 +17,11 @@ const App=()=>{
     <Routes>
       <Route path="/" element={<Home/>} />
 
-      <Route path="/admin" element={<AdminLayout/>} />
+      <Route path="/admin" element={<AdminLayout/>} >
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="settings" element={<Settings/>} />
+      <Route path="ebook" element={<Ebook/>} />
+      </Route>
 
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Signup />} />
