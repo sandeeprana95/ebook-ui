@@ -42,7 +42,7 @@ const AdminLayout=()=>{
         {/*  mobile */}
         <div className="h-[3000px] lg:hidden block" >
           <aside style={{width:mobileWidth,transition:"0.3s"}}
-          className="h-screen bg-white fixed overflow-x-hidden z-[10] " >
+          className="h-screen bg-green-200 fixed overflow-x-hidden z-[10] " >
             <div className="flex justify-end p-2 border-b ">
             <button onClick={()=>setMobileWidth(0)}
             className="w-8 h-8 p-2  border  rounded-full flex items-center justify-center text-2xl "
@@ -66,7 +66,8 @@ const AdminLayout=()=>{
                 {
                     menus.map((item,index)=>(
                         <button key={index} onClick={()=>onMobileNavigate(item.href)}
-                        className="shadow-2xl py-3 bg-gray-300 font-semibold  hover:bg-red-500 hover:text-white"
+                        style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
+                        className="shadow-2xl py-3 font-semibold  hover:bg-red-500 hover:text-white"
                         >{item.label}</button>
                     ))
                 }
@@ -74,13 +75,14 @@ const AdminLayout=()=>{
 
           </aside>
           <section className="bg-red-200 h-full" >
-            <nav
-            className="p-2.5 bg-white flex justify-between sticky top-0"
+            <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
+            className="flex justify-between sticky top-0 p-2.5"
             >
                 <div>
                     <button onClick={()=>setMobileWidth(280)}
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
+                    <label className="font-medium text-white text-xl ml-2">Ebook</label>
                 </div>
             </nav>
             <div className="w-11/12  mx-auto mt-2 p-2 rounded bg-white min-h-screen" >
@@ -94,7 +96,7 @@ const AdminLayout=()=>{
         {/* desktop */}
         <div className="h-[3000px] lg:block hidden" >
           <aside style={{width:width,transition:"0.3s"}}
-          className="h-screen bg-white fixed overflow-x-hidden ">
+          className="h-screen bg-green-200 fixed overflow-x-hidden ">
              <div
             className="flex flex-col items-center justify-center my-2"
             >
@@ -116,7 +118,8 @@ const AdminLayout=()=>{
                         className="shadow-2xl"
                         >
                             <Link to={item.href} 
-                            className="block h-full w-full py-3 bg-gray-300  font-semibold  hover:bg-red-500 hover:text-white"
+                            style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
+                            className="block h-full w-full py-3  font-semibold  hover:bg-red-500 hover:text-white"
                              >{item.label}
                              </Link>
                         </button>
@@ -129,13 +132,14 @@ const AdminLayout=()=>{
           <section style={{marginLeft:width,transition:"0.3s"}}
           className="bg-red-200 h-full"
           >
-            <nav
-            className="p-2.5 bg-white flex justify-between sticky top-0"
+            <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
+            className="p-2.5 flex justify-between sticky top-0"
             >
                 <div>
                     <button onClick={()=>{setWidth(width===280 ? 0 : 280)}}
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
+                 <label className="font-medium text-white text-xl ml-2">Ebook</label>
                 </div>
 
                 <div>
