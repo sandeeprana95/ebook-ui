@@ -109,7 +109,9 @@ const AdminLayout=()=>{
 
             <div className="flex flex-col gap-4 mt-4" >
                 {
-                    menus.map((item,index)=>(
+                    menus.map((item,index)=>{                        
+                        if(item.label !== "Logout")
+                          return(
                         <button key={index}
                         className="shadow-2xl"
                         >
@@ -118,7 +120,8 @@ const AdminLayout=()=>{
                              >{item.label}
                              </Link>
                         </button>
-                    ))
+                          )
+                    })
                 }
             </div>
 
@@ -137,7 +140,9 @@ const AdminLayout=()=>{
 
                 <div>
                     <button>
+                        <Link to="/login" >
                         <i className="ri-logout-circle-r-line text-2xl" />
+                        </Link>
                     </button>
                 </div>
             </nav>
