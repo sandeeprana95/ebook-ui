@@ -78,11 +78,13 @@ const AdminLayout=()=>{
             <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
             className="flex justify-between sticky top-0 p-2.5"
             >
-                <div>
+                <div className="flex items-center justify-center gap-2" >
                     <button onClick={()=>setMobileWidth(280)}
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
-                    <label className="font-medium text-white text-xl ml-2">Ebook</label>
+                    <div className="h-[40px] rounded ">
+                        <img className="w-full h-full rounded" src="/images/ebook-logo1.png" />
+                    </div>
                 </div>
             </nav>
             <div className="w-11/12  mx-auto mt-2 p-2 rounded bg-white min-h-screen" >
@@ -135,11 +137,13 @@ const AdminLayout=()=>{
             <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
             className="p-2.5 flex justify-between sticky top-0"
             >
-                <div>
+                 <div className="flex items-center justify-center gap-2" >
                     <button onClick={()=>{setWidth(width===280 ? 0 : 280)}}
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
-                 <label className="font-medium text-white text-xl ml-2">Ebook</label>
+                  <div className="h-[40px] rounded ">
+                        <img className="w-full h-full rounded" src="/images/ebook-logo1.png" />
+                    </div>
                 </div>
 
                 <div>
