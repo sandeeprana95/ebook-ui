@@ -83,7 +83,7 @@ const AdminLayout=()=>{
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
                     <div className="h-[40px] rounded ">
-                        <img className="w-full h-full rounded" src="/images/ebook-logo1.png" />
+                        <img className="w-full h-full rounded" src="/images/ebook-logo.png" />
                     </div>
                 </div>
             </nav>
@@ -142,7 +142,7 @@ const AdminLayout=()=>{
                     className="w-9 h-9 border rounded hover:bg-black hover:text-white"
                     ><i className="ri-menu-line text-2xl" /></button>
                   <div className="h-[40px] rounded ">
-                        <img className="w-full h-full rounded" src="/images/ebook-logo1.png" />
+                        <img className="w-full h-full rounded" src="/images/ebook-logo.png" />
                     </div>
                 </div>
 
