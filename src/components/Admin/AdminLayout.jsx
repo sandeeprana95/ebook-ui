@@ -76,7 +76,7 @@ const AdminLayout=()=>{
           </aside>
           <section className="bg-red-200 h-full" >
             <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-            className="flex justify-between sticky top-0 p-2.5"
+            className="flex justify-between sticky top-0 p-2.5 z-[10]"
             >
                 <div className="flex items-center justify-center gap-2" >
                     <button onClick={()=>setMobileWidth(280)}
@@ -87,7 +87,7 @@ const AdminLayout=()=>{
                     </div>
                 </div>
             </nav>
-            <div className="w-11/12  mx-auto mt-2 p-2 rounded bg-white min-h-screen" >
+            <div className="w-11/12  mx-auto mt-2 py-2 px-4 rounded bg-white min-h-screen space-y-4 " >
             <div>
                 <h1>{location.pathname}</h1>
             </div>

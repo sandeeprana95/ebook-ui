@@ -46,11 +46,15 @@ const Settings=()=>{
         ]
 
     return(
-        <div className="space-y-4 mt-4 p-4 animate__animated animate__fadeIn ">
-            <div className="flex gap-2 " >
+        <div className=" space-y-4 animate__animated animate__fadeIn">
+            <div className="flex gap-2" >
                     {
                       tabs.map((item,index)=>(
                             <button key={index} onClick={()=>setActive(index)}
+                             style={{
+                                    background:active === index ? "#6366F1" : null,
+                                    color:active === index ? "#ffffff" : null 
+                                }}
                             className="border hover:border-gray-200 hover:bg-gray-300 text-lg font-semibold shadow-2xl border-gray-500 rounded px-4 py-1"
                             >{item.label}
                             </button>
