@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound"
 import Dashboard from "./components/Admin/Dashboard"
 import Settings from "./components/Admin/Settings"
 import Ebook from "./components/Admin/Ebook"
+import Otp from "./components/Admin/Otp"
 
 const App=()=>{
   return(
@@ -25,6 +26,7 @@ const App=()=>{
 
       <Route path="/login" element={<Login/>} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/otp" element={<Otp />} />
       <Route path="*" element={<NotFound/>} />
     </Routes>
     </BrowserRouter>
