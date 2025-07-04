@@ -2,24 +2,59 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 
 const Signup=()=>{
   const [type,setType]=useState("password")
   const [mobile,setMobile]=useState("")
 
-    const handleInput=(e)=>{
+  const model={
+    fullname:"",
+    email:"",
+    password:"",
+    mobile:""
+  }
+  const [inputValue,setInputValue]= useState(model)
+
+  const handleInput=(e)=>{
         const input = e.target
         const name = input.name
         const value = input.value
 
     }
 
+  const signupForm=async(e)=>{
+    try{
+        e.preventDefault()
+
+        const user ={
+            fullname:"sandeep",
+            email:"sandeep@gmail.com",
+            password:"9090",
+            mobile:9090
+        }
+
+        const res = await axios.post("http://localhost:8080/user/signup",user)
+        
+        console.log(res)
+        alert(res)
+
+    }
+    catch(err)
+    {
+        console.log(err)
+        err.response? console.log(err.response.data.message) : console.log(err.message)
+    }
+  }
+
+  
+
     return(
         <div className="min-h-screen animate__animated animate__fadeIn flex justify-center items-center ">
             <div className="w-[480px] mx-auto animate__pulse shadow-xl p-2 border border-gray-300 rounded-sm">
             <h1 className="font-semibold text-2xl text-center text-blue-500" >Register Now</h1>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={signupForm} >
                 <div className="flex flex-col gap-2">
                     <label className="font-medium">Fullname</label>
                     <input
@@ -59,7 +94,7 @@ const Signup=()=>{
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium">Phone</label>
+                    <label className="font-medium">Mobile</label>
                   <PhoneInput
                     country={'in'}
                     name="mobile"

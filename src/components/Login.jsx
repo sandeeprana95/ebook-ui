@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
+axios.defaults.withCredentials=true
 
 const Login=()=>{
 
@@ -12,11 +14,32 @@ const Login=()=>{
 
     }
 
+ const loginForm = async(e)=>{
+    try{
+        e.preventDefault()
+
+        const user = {
+            email:"sandeep@gmail.com",
+            password:"9090"
+        }
+
+        const res = await axios.post("http://localhost:8080/user/login",user)
+        
+        alert(res.data)
+        console.log(res.data)
+    }
+    catch(err)
+    {
+        err.response ? console.log(err.response.data.message) : console.log(err.message)
+    }
+
+ }
+
     return(
         <div className="min-h-screen animate__animated animate__fadeIn flex justify-center items-center ">
             <div className="w-[480px] mx-auto animate__pulse shadow-xl p-2 border border-gray-300 rounded-sm">
             <h1 className="font-semibold text-2xl text-center text-green-500" >Hi User !</h1>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={loginForm} >
                 <div className="flex flex-col gap-2">
                     <label className="font-medium">Email</label>
                     <input
