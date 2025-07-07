@@ -1,10 +1,16 @@
 import { useState } from "react"
-import { Outlet , Link, useNavigate, useLocation } from "react-router-dom"
+import { Outlet , Link, useNavigate, useLocation, Navigate } from "react-router-dom"
+import useSWR, { mutate } from "swr"
+import fetcher from "../../util/fetcher"
+import Loader from "../Shared/Loader"
+import axios from "axios"
 
 const AdminLayout=()=>{
+    const {data:session,error:sessionError,isLoading:sessionLoading}=
+    useSWR("user/session",fetcher)
+
     const navigate = useNavigate()
     const location= useLocation()
-    console.log(location)
 
     const [width , setWidth]= useState(280)
     const [mobileWidth,setMobileWidth] = useState(0)
@@ -24,11 +30,6 @@ const AdminLayout=()=>{
             label:"Settings",
             href:"/admin/settings",
             icon:"ri-tools-line"
-        },
-        {
-            label:"Logout",
-            href:"/login",
-            icon:"ri-logout-circle-r-line"
         }
     ]
 
@@ -37,12 +38,34 @@ const AdminLayout=()=>{
            setMobileWidth(0)
     }
 
+    const logout=async()=>{
+        try{
+          const {data} =  await axios.get("/user/logout")
+          mutate("user/session")
+          
+        }
+        catch(err)
+        {
+            err.response? console.log(err.response.data.message) : console.log(err.message)
+        }
+    }
+
+    if(sessionLoading)
+        return( <div className="h-screen flex items-center justify-center" >
+        <Loader />
+        </div>
+        )
+
+    if(sessionError)
+     return(<Navigate to="/login"/>)
+
+
     return(
         <>
         {/*  mobile */}
         <div className="h-[3000px] lg:hidden block" >
           <aside style={{width:mobileWidth,transition:"0.3s"}}
-          className="h-screen bg-green-200 fixed overflow-x-hidden z-[10] " >
+          className="h-screen bg-green-200 fixed overflow-x-hidden z-[20] " >
             <div className="flex justify-end p-2 border-b ">
             <button onClick={()=>setMobileWidth(0)}
             className="w-8 h-8 p-2  border  rounded-full flex items-center justify-center text-2xl "
@@ -57,8 +80,8 @@ const AdminLayout=()=>{
                 >
                     <i className="ri-user-fill text-4xl  " />
                 </button>
-                    <h1 className="text-lg font-medium mt-2" >Er Sourav</h1>
-                    <label className="text-gray-500" >example@gmail.com</label>
+                    <h1 className="text-lg font-medium mt-2" >{session?.fullname}</h1>
+                    <label className="text-gray-500" >{session?.email}</label>
             </div>
 
 
@@ -68,9 +91,13 @@ const AdminLayout=()=>{
                         <button key={index} onClick={()=>onMobileNavigate(item.href)}
                         style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
                         className="shadow-2xl py-3 font-semibold hover:text-white"
-                        >{item.label}</button>
+                        ><i className={`${item.icon} mr-2`} />{item.label}</button>
                     ))
                 }
+                   <button onClick={logout}
+                        style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
+                        className="shadow-2xl py-3 font-semibold hover:text-white"
+                        ><i className="ri-logout-circle-r-line mr-2"/>Logout</button>
             </div>
 
           </aside>
@@ -87,7 +114,7 @@ const AdminLayout=()=>{
                     </div>
                 </div>
             </nav>
-            <div className="w-11/12  mx-auto mt-2 py-2 px-4 rounded bg-white min-h-screen space-y-4 " >
+            <div className="w-11/12 mx-auto mt-2 py-2 px-4 rounded bg-white min-h-screen space-y-4 " >
             <div>
                 <h1>{location.pathname}</h1>
             </div>
@@ -95,6 +122,7 @@ const AdminLayout=()=>{
             </div>
           </section>
         </div>
+
         {/* desktop */}
         <div className="h-[3000px] lg:block hidden" >
           <aside style={{width:width,transition:"0.3s"}}
@@ -107,8 +135,8 @@ const AdminLayout=()=>{
                 >
                     <i className="ri-user-fill text-4xl  " />
                 </button>
-                    <h1 className="text-lg font-medium mt-2" >Er Sourav</h1>
-                    <label className="text-gray-500" >example@gmail.com</label>
+                    <h1 className="text-lg font-medium mt-2" >{session?.fullname}</h1>
+                    <label className="text-gray-500" >{session?.email}</label>
             </div>
 
             <div className="flex flex-col gap-4 mt-4" >
@@ -135,7 +163,7 @@ const AdminLayout=()=>{
           className="bg-red-200 h-full"
           >
             <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-            className="p-2.5 flex justify-between sticky top-0"
+            className="p-2.5 flex justify-between sticky top-0 z-[10]"
             >
                  <div className="flex items-center justify-center gap-2" >
                     <button onClick={()=>{setWidth(width===280 ? 0 : 280)}}
@@ -147,14 +175,14 @@ const AdminLayout=()=>{
                 </div>
 
                 <div>
-                    <button>
+                    <button onClick={logout} >
                         <Link to="/login" >
                         <i className="ri-logout-circle-r-line text-2xl" />
                         </Link>
                     </button>
                 </div>
             </nav>
-            <div className="w-11/12  mx-auto" >
+            <div className="w-11/12  mx-auto mt-2 py-2 px-4 rounded bg-white min-h-screen space-y-4 " >
             <div>
                 <h1>{location.pathname}</h1>
             </div>
@@ -165,6 +193,7 @@ const AdminLayout=()=>{
         </>
 
     )
+
 }
 
 export default AdminLayout

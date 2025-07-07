@@ -1,9 +1,11 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { mutate } from "swr"
 axios.defaults.withCredentials=true
 
 const Login=()=>{
+    const navigate = useNavigate()
 
   const [type,setType]=useState("password")
 
@@ -11,7 +13,6 @@ const Login=()=>{
         const input = e.target
         const name = input.name
         const value = input.value
-
     }
 
  const loginForm = async(e)=>{
@@ -23,16 +24,15 @@ const Login=()=>{
             password:"9090"
         }
 
-        const res = await axios.post("http://localhost:8080/user/login",user)
-        
-        alert(res.data)
-        console.log(res.data)
+       const res  =  await axios.post("http://localhost:8080/user/login",user)
+        alert(res.data.message)
+        navigate("/admin/dashboard")
     }
     catch(err)
     {
         err.response ? console.log(err.response.data.message) : console.log(err.message)
     }
-
+    
  }
 
     return(
