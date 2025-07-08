@@ -1,13 +1,13 @@
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 
 
 const Signup=()=>{
+  const navigate = useNavigate()
   const [type,setType]=useState("password")
-  const [mobile,setMobile]=useState("")
 
   const model={
     fullname:"",
@@ -16,11 +16,16 @@ const Signup=()=>{
     mobile:""
   }
   const [inputValue,setInputValue]= useState(model)
+  const [mobileInput,setMobileInput]=useState("")
 
   const handleInput=(e)=>{
         const input = e.target
         const name = input.name
         const value = input.value
+        setInputValue({
+            ...inputValue,
+            [name] : value
+        })
 
     }
 
@@ -28,17 +33,9 @@ const Signup=()=>{
     try{
         e.preventDefault()
 
-        const user ={
-            fullname:"sandeep",
-            email:"sandeep@gmail.com",
-            password:"9090",
-            mobile:9090
-        }
-
-        const res = await axios.post("http://localhost:8080/user/signup",user)
-        
-        console.log(res)
-        alert(res)
+        const {data} = await axios.post("http://localhost:8080/user/signup",inputValue)
+        alert(data.message)
+        navigate("/login")
 
     }
     catch(err)
@@ -60,6 +57,7 @@ const Signup=()=>{
                     <input
                     type="text"
                     name="fullname"
+                    value={inputValue.fullname}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your email" />
@@ -69,6 +67,7 @@ const Signup=()=>{
                     <input
                     type="email"
                     name="email"
+                    value={inputValue.email}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your email" />
@@ -78,6 +77,7 @@ const Signup=()=>{
                     <input
                     type={type}
                     name="password"
+                    value={inputValue.password}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your password" />
@@ -98,8 +98,8 @@ const Signup=()=>{
                   <PhoneInput
                     country={'in'}
                     name="mobile"
-                    value={mobile}
-                    onChange={(value)=>setMobile(value)}
+                    value={inputValue.mobile}
+                    onChange={(value)=>setInputValue({...inputValue,"mobile":value})}
                     inputStyle={{width:"100%",height:"48.6px",border:"1px solid gray"}}
                     enableSearch
                     />

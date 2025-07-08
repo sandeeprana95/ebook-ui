@@ -1,18 +1,26 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { mutate } from "swr"
 axios.defaults.withCredentials=true
 
 const Login=()=>{
     const navigate = useNavigate()
-
+    const formModel={
+        email:"",
+        password:""
+    }
   const [type,setType]=useState("password")
+  const [loginInput,setLoginInput]=useState(formModel)
 
     const handleInput=(e)=>{
         const input = e.target
         const name = input.name
         const value = input.value
+        setLoginInput({
+            ...loginInput,
+            [name] : value
+        })
     }
 
  const loginForm = async(e)=>{
@@ -24,9 +32,12 @@ const Login=()=>{
             password:"9090"
         }
 
-       const res  =  await axios.post("http://localhost:8080/user/login",user)
-        alert(res.data.message)
-        navigate("/admin/dashboard")
+       const {data} =  await axios.post("http://localhost:8080/user/login",loginInput)
+
+        if(user.role === "admin")
+        return navigate("/admin/dashboard")
+
+        alert("hello user")
     }
     catch(err)
     {
