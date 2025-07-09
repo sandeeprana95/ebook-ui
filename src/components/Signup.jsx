@@ -3,6 +3,7 @@ import 'react-phone-input-2/lib/style.css'
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
+import { toast } from 'react-toastify'
 
 
 const Signup=()=>{
@@ -16,7 +17,6 @@ const Signup=()=>{
     mobile:""
   }
   const [inputValue,setInputValue]= useState(model)
-  const [mobileInput,setMobileInput]=useState("")
 
   const handleInput=(e)=>{
         const input = e.target
@@ -34,14 +34,15 @@ const Signup=()=>{
         e.preventDefault()
 
         const {data} = await axios.post("http://localhost:8080/user/signup",inputValue)
-        alert(data.message)
+        toast.success(data.message,{position:"top-center"})
         navigate("/login")
 
     }
     catch(err)
     {
-        console.log(err)
-        err.response? console.log(err.response.data.message) : console.log(err.message)
+      toast.error(err.response? err.response.data.message : err.message 
+        ,{position:"top-center"}
+      )
     }
   }
 

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios, { AxiosError } from "axios"
 import { mutate } from "swr"
+import { toast } from "react-toastify"
 axios.defaults.withCredentials=true
 
 const Login=()=>{
@@ -26,7 +27,6 @@ const Login=()=>{
  const loginForm = async(e)=>{
     try{
         e.preventDefault()
-
         const user = {
             email:"sandeep@gmail.com",
             password:"9090"
@@ -37,11 +37,13 @@ const Login=()=>{
         if(user.role === "admin")
         return navigate("/admin/dashboard")
 
-        alert("hello user")
+        toast(data.message,{position:"top-center",type:"success"})
     }
     catch(err)
     {
-        err.response ? console.log(err.response.data.message) : console.log(err.message)
+        toast.error(err.response ? err.response.data.message : err.message,
+         {position:"top-center"}
+    )
     }
     
  }

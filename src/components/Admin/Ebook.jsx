@@ -1,32 +1,137 @@
 import { useState } from "react"
+import fetcher from "../../util/fetcher"
 import moment from "moment"
+import useSWR, { mutate } from "swr"
+import { createPortal } from "react-dom"
+import http from "../../util/http"
+import { toast } from "react-toastify"
 
 const Ebook=()=>{
     const [open,setOpen] = useState(false)
+
+    const {data:ebook,error:ebookError,isLoading:ebookLoading} = useSWR("/ebook",fetcher)
+
+    const ebookModel={
+        title:"",
+        description:"",
+        price:"",
+        discount:""
+    }
+
+    const [ebookInput,setEbookInput]=useState(ebookModel)
+    const [editEbookId,setEditEbookId]=useState(null)
+
+    const handleEbook=(e)=>{
+        const input = e.target
+        const name = input.name
+        const value = input.value
+        setEbookInput({
+            ...ebookInput,
+            [name] : value
+        })
+    }
+
+    const closeDrawer=()=>{
+        setOpen(false)
+        setEbookInput(ebookModel)
+        setEditEbookId(null)
+    }
+
+    const createEbook=async(e)=>{
+        const toastId = toast.loading("creating ebook...",{position:"top-center"})
+        try{
+            e.preventDefault()
+
+            await http.post("/ebook",ebookInput)
+             closeDrawer()
+             mutate("/ebook")
+        }
+        catch(err)
+        {
+           toast.error(err.response? err.response.data.message : err.message
+            ,{position:"top-center"})
+        }
+        finally
+        {
+            toast.done(toastId)
+        }
+    }
+
+    const saveEbook=async(e)=>{
+        closeDrawer()
+        const toastId = toast.loading("Updating ebook...",{position:"top-center"})
+        try{
+            e.preventDefault()
+           await http.put(`/ebook/${editEbookId}`,ebookInput)
+            mutate("/ebook")
+        }
+        catch(err)
+        {
+        toast.error(err.response? err.response.data.message : err.message
+            ,{position:"top-center"}
+        )
+        }
+        finally
+        {
+            toast.done(toastId)
+        }
+    }
+
+
+    const editEbook=(item)=>{
+        setOpen(true)
+        setEditEbookId(item._id)
+        delete item._id
+        setEbookInput(item)
+    }
+
+
+
+    const deleteEbook=async(id)=>{
+        const toastId = toast.loading("Processing...")
+        try{
+            await http.delete(`/ebook/${id}`)
+            mutate("/ebook")
+        }
+        catch(err)
+        {
+           toast.error(err.response? err.response.data.message : err.message
+            ,{position:"top-center"}
+           )
+        }
+        finally
+        {
+            toast.done(toastId)
+        }
+    }
+
     return(
-        <div className="space-y-8 animate__animated animate__fadeIn" >
+        <div className="space-y-8 animate__animated animate__fadeIn " >
             <button onClick={()=>setOpen(true)}
-            className="bg-indigo-500 px-6 py-2 rounded text-white font-medium"
-            > New Ebook
+            className="bg-indigo-500 hover:bg-indigo-600 px-4 py-1.5 rounded text-white font-medium"
+            ><i className="ri-add-line text-xl" /> New Ebook
             </button>
 
-            <div className="grid lg:grid-cols-4 gap-8">
+            <div className="grid lg:grid-cols-4 gap-8 ">
                 {
-                    Array(16).fill(0).map((item,index)=>(
-                        <div>
+                    ebook?.map((item,index)=>(
+                        <div key={index} className="shadow-xl" >
                            <img src="https://random-image-pepebigotes.vercel.app/api/random-image" />
                            <div className="px-4 pt-2 pb-4 border-l border-r border-b">
                             <h1 className="text-[17px] font-medium capitalize mt-3 mb-1"
-                            >Ebook Title</h1>
+                            >{item.title}</h1>
                             <div className="flex gap-2 items-center" >
-                                <label className="text-lg font-medium">5000</label>
-                                <del>6000</del>
+                                <label className="text-lg font-medium">₹{Math.round(item.price-(item.price*item.discount)/100)}</label>
+                                <del>₹{item.price}</del>
+                                <label>({item.discount}%off)</label>
                             </div>
-                            <label className="text-gray-500">{moment().format('MMM DD YYYY, hh:mm:ss A')}</label>
+                            <label className="text-gray-500">{moment(item.createdAt).format('MMM DD YYYY, hh:mm:ss A')}</label>
                               <div className="mt-4 space-x-3" >
-                                <button className="bg-green-400 text-white hover:bg-green-500 px-2 py-1 rounded" 
+                                <button onClick={()=>editEbook(item)}
+                                 className="bg-green-400 text-white hover:bg-green-500 px-2 py-1 rounded" 
                                 ><i className="ri-edit-line"/></button>
-                                <button className="bg-red-400 text-white hover:bg-red-500 px-2 py-1 rounded" 
+                                <button onClick={()=>deleteEbook(item._id)}
+                                 className="bg-red-400 text-white hover:bg-red-500 px-2 py-1 rounded" 
                                 ><i className="ri-delete-bin-line"/></button>
                                 </div>
                            </div>
@@ -34,6 +139,76 @@ const Ebook=()=>{
                     ))
                 }
             </div>
+
+          {
+            open && createPortal(
+            <div className="bg-[rgba(0,0,0,0.6)] h-full w-full absolute top-0 left-0 " style={{zIndex:9999}}>
+              <aside className="bg-white w-[300px] h-screen fixed px-2 pt-2 right-0 " >
+               <div className="flex border-b  pb-1 items-center justify-between " >
+                <label className="font-semibold text-lg" >Ebook Title</label>
+                <button onClick={()=>setOpen(false)} >
+                    <i className="ri-close-circle-line text-3xl"/>
+                </button>
+               </div>
+               {/* ebook create */}
+               <form onSubmit={ editEbookId ? saveEbook : createEbook }
+               className="space-y-4" >
+                <h1 className="font-semibold text-2xl text-center text-blue-500 mt-3">Create New Ebook</h1>
+                 <div className="flex flex-col gap-2" >
+                    <label className="text-sm font-semibold">Title</label>
+                    <input
+                    type="text"
+                    name="title"
+                    value={ebookInput.title}
+                    onChange={handleEbook}
+                    placeholder="enter ebook title" 
+                    className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
+                 </div>
+                 
+                 <div className="grid grid-cols-2 gap-4" >
+                 <div className="flex flex-col gap-2 " >
+                    <label className="text-sm font-semibold" >Price</label>
+                    <input 
+                    name="price"
+                    value={ebookInput.price}
+                    onChange={handleEbook}
+                    placeholder="enter price"
+                    className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
+                 </div>
+                 <div className="flex flex-col gap-2 " >
+                    <label className="text-sm font-semibold" >Discount</label>
+                    <input 
+                    name="discount"
+                    value={ebookInput.discount}
+                    onChange={handleEbook}
+                    placeholder="enter discount"
+                    className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
+                 </div>
+                 </div>
+                 
+                 <div className="flex flex-col gap-2" >
+                    <label className="text-sm font-semibold">Description</label>
+                    <textarea
+                    name="description"
+                    value={ebookInput.description}
+                    onChange={handleEbook}
+                    rows={6}
+                    placeholder="write ebook description here..."
+                    className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
+                 </div>
+                  {
+                    editEbookId ?
+                    <div className="flex flex-col gap-2" >
+                        <button className="w-full font-semibold text-white bg-blue-500 hover:bg-blue-600 py-3 rounded" >Save Ebook</button>
+                        <button type="button" onClick={()=>closeDrawer()} className="w-full font-semibold text-white bg-red-500 hover:bg-red-600 py-3 rounded" >Cancel Ebook</button>
+                    </div>
+                    :
+                    <button className="w-full font-semibold text-white bg-green-500 hover:bg-green-600 py-3 rounded" >Create Ebook</button>
+                  }
+               </form>
+              </aside>
+            </div>,document.body
+          )}
            
         </div>
     )

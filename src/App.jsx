@@ -11,6 +11,7 @@ import Dashboard from "./components/Admin/Dashboard"
 import Settings from "./components/Admin/Settings"
 import Ebook from "./components/Admin/Ebook"
 import Otp from "./components/Admin/Otp"
+import { ToastContainer } from "react-toastify"
 
 const App=()=>{
   return(
@@ -29,6 +30,7 @@ const App=()=>{
       <Route path="/otp" element={<Otp />} />
       <Route path="*" element={<NotFound/>} />
     </Routes>
+    <ToastContainer />
     </BrowserRouter>
   )
 }

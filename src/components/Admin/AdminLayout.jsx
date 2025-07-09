@@ -4,6 +4,7 @@ import useSWR, { mutate } from "swr"
 import fetcher from "../../util/fetcher"
 import Loader from "../Shared/Loader"
 import axios from "axios"
+import { toast } from "react-toastify"
 
 const AdminLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
@@ -40,13 +41,14 @@ const AdminLayout=()=>{
 
     const logout=async()=>{
         try{
-          const {data} =  await axios.get("/user/logout")
-          mutate("user/session")
-          
+          await axios.get("/user/logout")
+          mutate("user/session") 
         }
         catch(err)
-        {
-            err.response? console.log(err.response.data.message) : console.log(err.message)
+        { 
+           toast(err.response? err.response.data.message : err.message
+            ,{position:"top-center"}
+           )
         }
     }
 
@@ -92,7 +94,7 @@ const AdminLayout=()=>{
                 </aside>
                 <section className="bg-red-200 h-full" >
                     <nav style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-                    className="flex justify-between sticky top-0 p-2.5 z-[10]"
+                    className="flex justify-between sticky top-0 p-2.5 z-[1] "
                     >
                         <div className="flex items-center justify-center gap-2" >
                             <button onClick={()=>setMobileWidth(280)}
