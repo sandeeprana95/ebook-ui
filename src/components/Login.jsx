@@ -33,11 +33,16 @@ const Login=()=>{
         }
 
        const {data} =  await axios.post("http://localhost:8080/user/login",loginInput)
+       
+       toast(data.message,{position:"top-center",type:"success"})
 
-        if(user.role === "admin")
+        if(data.role === "admin")
         return navigate("/admin/dashboard")
 
-        toast(data.message,{position:"top-center",type:"success"})
+        alert("hello user")
+        if(data.role === "user")
+        return navigate("/app/ebook")
+
     }
     catch(err)
     {

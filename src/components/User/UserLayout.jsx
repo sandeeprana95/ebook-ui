@@ -6,7 +6,7 @@ import Loader from "../Shared/Loader"
 import axios from "axios"
 import { toast } from "react-toastify"
 
-const AdminLayout=()=>{
+const UserLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
     useSWR("user/session",fetcher)
 
@@ -24,7 +24,7 @@ const AdminLayout=()=>{
         },
         {
             label:"Ebook",
-            href:"/admin/ebook",
+            href:"/app/ebook",
             icon:"ri-bookmark-line"
         },
         {
@@ -197,7 +197,7 @@ const AdminLayout=()=>{
     if(sessionError)
      return(<Navigate to="/login"/>)
 
-    if (session.role !== "admin")
+    if (session.role !== "user")
         return (<Navigate to="/" />)
 
     return(
@@ -210,4 +210,4 @@ const AdminLayout=()=>{
 
 }
 
-export default AdminLayout
+export default UserLayout

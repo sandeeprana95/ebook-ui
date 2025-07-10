@@ -10,14 +10,23 @@ import NotFound from "./components/NotFound"
 import Dashboard from "./components/Admin/Dashboard"
 import Settings from "./components/Admin/Settings"
 import Ebook from "./components/Admin/Ebook"
+import UserEbook from "./components/User/Ebook"
 import Otp from "./components/Admin/Otp"
 import { ToastContainer } from "react-toastify"
+import UserLayout from "./components/User/UserLayout"
+import Layout from "./components/Layout"
 
 const App=()=>{
   return(
     <BrowserRouter>
     <Routes>
+      <Route  element={<Layout />} >
       <Route path="/" element={<Home/>} />
+      </Route>
+
+      <Route path="/app" element={<UserLayout/>} >
+      <Route path="ebook" element={<UserEbook/>} />
+      </Route>
 
       <Route path="/admin" element={<AdminLayout/>} >
       <Route path="dashboard" element={<Dashboard />} />
