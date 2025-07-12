@@ -12,7 +12,7 @@ import { toast } from "react-toastify"
 const Home=()=>{
    const navigate = useNavigate()
 
- const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
+const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
 
 
 const buyNow = async()=>{
@@ -30,7 +30,6 @@ const buyNow = async()=>{
         })
     }
 }
-
 
 
 if(ebookLoading)

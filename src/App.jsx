@@ -24,14 +24,14 @@ const App=()=>{
       <Route path="/" element={<Home/>} />
       </Route>
 
-      <Route path="/app" element={<UserLayout/>} >
-      <Route path="ebook" element={<UserEbook/>} />
+      <Route  element={<UserLayout/>} >
+      <Route path="app/ebook" element={<UserEbook/>} />
       </Route>
 
-      <Route path="/admin" element={<AdminLayout/>} >
-      <Route path="dashboard" element={<Dashboard />} />
-      <Route path="settings" element={<Settings/>} />
-      <Route path="ebook" element={<Ebook/>} />
+      <Route  element={<AdminLayout/>} >
+      <Route path="admin/dashboard" element={<Dashboard />} />
+      <Route path="admin/settings" element={<Settings/>} />
+      <Route path="admin/ebook" element={<Ebook/>} />
       </Route>
 
       <Route path="/login" element={<Login/>} />
