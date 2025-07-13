@@ -7,29 +7,59 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import http from "../util/http"
 import { toast } from "react-toastify"
+import { useRazorpay } from "react-razorpay"
 
 
 const Home=()=>{
    const navigate = useNavigate()
+   const { Razorpay } = useRazorpay()
 
 const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
 
 
-const buyNow = async()=>{
+const buyNow = async(item)=>{
     try{
-        const {data} = await http.post("/payment/order")
+        const {data} = await http.post("/payment/order",{ebookId:item._id})
         console.log(data)
+            const options = {
+                    key: "rzp_test_t847Z4hHUvNlYO",
+                    amount: data.amount, // Amount in paise
+                    currency: "INR",
+                    name: "Test Company",
+                    description: "Test Transaction",
+                    order_id: data.id, // Generate order_id on server
+                    handler: (response) => {
+                        console.log(response);
+                        alert("Payment Successful!");
+                    },
+                    prefill: {
+                        name: "John Doe",
+                        email: "john.doe@example.com",
+                        contact: "9999999999",
+                    },
+                    theme: {
+                        color: "#3399cc",
+                    },
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+
+                    rzp.on("payment.failed",(res)=>{
+                           console.log(res)
+                    })
+
+                }
+        catch(err)
+        {
+            if(err.status === 400)
+                return navigate("/login")
+            
+            toast.error("Failed to capture payment please try after sometime",{
+                position: "top-center"
+            })
+        }
     }
-    catch(err)
-    {
-        if(err.status === 400)
-            return navigate("/login")
-        
-        toast.error("Failed to capture payment please try after sometime",{
-            position: "top-center"
-        })
-    }
-}
 
 
 if(ebookLoading)
@@ -76,7 +106,7 @@ if(ebookErr)
                         <label className="text-gray-500" >({item.discount}%off)</label>
                     </div>
                     <div className="bg-blue-500 hover:bg-blue-600 py-3 text-white text-center mt-2 font-semibold rounded " >
-                    <button onClick={buyNow} >BuyNow</button>
+                    <button onClick={()=>buyNow(item)} >BuyNow</button>
                     </div>
                     </div>
                 </div>

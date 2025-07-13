@@ -15,32 +15,40 @@ import Otp from "./components/Admin/Otp"
 import { ToastContainer } from "react-toastify"
 import UserLayout from "./components/User/UserLayout"
 import Layout from "./components/Layout"
+import Context from "./util/Context"
+import useSWR from "swr"
+import fetcher from "./util/fetcher"
 
 const App=()=>{
+
+  const { data:session , error:sessionError } = useSWR("/user/session",fetcher)
+
   return(
-    <BrowserRouter>
-    <Routes>
-      <Route  element={<Layout />} >
-      <Route path="/" element={<Home/>} />
-      </Route>
+    <Context.Provider  value={session} >
+        <BrowserRouter>
+            <Routes>
+                <Route  element={<Layout />} >
+                <Route path="/" element={<Home/>} />
+                </Route>
 
-      <Route  element={<UserLayout/>} >
-      <Route path="app/ebook" element={<UserEbook/>} />
-      </Route>
+                <Route  element={<UserLayout/>} >
+                <Route path="app/ebook" element={<UserEbook/>} />
+                </Route>
 
-      <Route  element={<AdminLayout/>} >
-      <Route path="admin/dashboard" element={<Dashboard />} />
-      <Route path="admin/settings" element={<Settings/>} />
-      <Route path="admin/ebook" element={<Ebook/>} />
-      </Route>
+                <Route  element={<AdminLayout/>} >
+                <Route path="admin/dashboard" element={<Dashboard />} />
+                <Route path="admin/settings" element={<Settings/>} />
+                <Route path="admin/ebook" element={<Ebook/>} />
+                </Route>
 
-      <Route path="/login" element={<Login/>} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/otp" element={<Otp />} />
-      <Route path="*" element={<NotFound/>} />
-    </Routes>
-    <ToastContainer />
-    </BrowserRouter>
+                <Route path="/login" element={<Login/>} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/otp" element={<Otp />} />
+                <Route path="*" element={<NotFound/>} />
+             </Routes>
+          <ToastContainer />
+        </BrowserRouter>
+    </Context.Provider>
   )
 }
 
