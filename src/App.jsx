@@ -12,19 +12,39 @@ import Settings from "./components/Admin/Settings"
 import Ebook from "./components/Admin/Ebook"
 import UserEbook from "./components/User/Ebook"
 import Otp from "./components/Admin/Otp"
-import { ToastContainer } from "react-toastify"
+import { toast, ToastContainer } from "react-toastify"
 import UserLayout from "./components/User/UserLayout"
 import Layout from "./components/Layout"
 import Context from "./util/Context"
 import useSWR from "swr"
 import fetcher from "./util/fetcher"
+import { useEffect, useState } from "react"
+import http from "./util/http"
 
 const App=()=>{
 
-  const { data:session , error:sessionError } = useSWR("/user/session",fetcher)
+  // const { data:session , error:sessionError } = useSWR("/user/session",fetcher)
+  const [session,setSession] = useState(null)
+  const [loading,setLoading] = useState(null)
+
+ const getSession=async()=>{
+  try{
+        const user = await http.get("/user/session")
+        setSession(user)
+  }
+  catch(err)
+  {
+    toast.error(err.response? err.response.data.message :err.message)
+  }
+ }
+
+  useEffect(()=>{
+    getSession()
+  },[])
+
 
   return(
-    <Context.Provider  value={session} >
+    <Context.Provider  value={{session,setSession,loading,setLoading}} >
         <BrowserRouter>
             <Routes>
                 <Route  element={<Layout />} >

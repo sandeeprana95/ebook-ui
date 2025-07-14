@@ -1,34 +1,112 @@
-import { Outlet, Link} from "react-router-dom"
+import { useContext } from "react"
+import Context from "../util/Context.js"
+import http from "../util/http.js"
+import { Outlet, Link, useNavigate} from "react-router-dom"
+import { toast } from "react-toastify"
 
 const Layout=()=>{
-    return(
+
+    const navigate = useNavigate()
+    const { session , setSession , loading , setLoading } = useContext(Context)
+
+
+    const menu= [
+            {
+                label:"Home",
+                href:"/",
+                icon:"ri-home-line text-lg"
+            },
+            {
+                label:"Login",
+                href:"/login",
+                icon:"ri-login-box-line text-lg"
+            },
+            {
+                label:"Signup",
+                href:"/signup",
+                icon:"ri-user-add-line text-lg"
+            },
+            {
+                label:"Logout",
+                href:"/",
+                icon:"ri-logout-circle-r-line text-lg"
+            }
+       ]
+
+
+       const logoutSession=async(item)=>{
+
+              if(item.label === "Logout")
+                try{
+                    await http.get("/user/logout")
+                    setSession(null)
+                    navigate("/")
+                }
+                catch(err)
+                {
+                    toast.error(err.response? err.response.data.message : err.message)
+                }
+                finally{
+                    
+                }
+
+       }
+
+
+
+    return(  
         <div>
             <nav className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-md">
             <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 <div className="text-2xl font-bold">
                 <Link to="/">
-                <div className="h-[40px] rounded ">
-                    <img className="w-full h-full rounded" src="/images/ebook-logo.png" />
-                </div>
+                    <div className="h-[40px] rounded ">
+                        <img className="w-full h-full rounded" src="/images/ebook-logo.png" />
+                    </div>
                 </Link>
                 </div>
-                <div className="space-x-6 flex">
-                <Link to="/" className="flex items-center gap-1 hover:text-gray-200">
-                    <i className="ri-home-line text-lg"></i> Home
-                </Link>
-                <Link to="/login" className="flex items-center gap-1 hover:text-gray-200">
-                    <i className="ri-login-box-line text-lg"></i> Login
-                </Link>
-                <Link to="/signup" className="flex items-center gap-1 hover:text-gray-200">
-                    <i className="ri-user-add-line text-lg"></i> Signup
-                </Link>
-                </div>
-                {/* Mobile menu */}
+                { session && <>
+                    <div className="space-x-6 flex">
+                    {
+                        menu.map((item,index)=>(
+                            <Link to={item.href}  onClick={()=>logoutSession(item)}
+                             className="flex items-center gap-1 hover:text-gray-200">
+                                <i className={`${item.icon}`}></i> {item.label}
+                            </Link>
+                        ))
+                    }
+                    </div>
+            
+
                 <div className="md:hidden">
                 <button id="menu-btn" className="text-2xl">
                     <i className="ri-menu-line"></i>
                 </button>
                 </div>
+                </>
+               }
+
+               { ! session && 
+                 <div className="space-x-6 flex">
+                    {
+                         menu.map((item, index) => {
+                            if (item.label !== "Logout" && item.label !== "Home") {
+                            return (
+                                <Link
+                                key={index}
+                                to={item.href}
+                                className="flex items-center gap-1 hover:text-gray-200"
+                                >
+                                <i className={`${item.icon}`}></i> {item.label}
+                                </Link>
+                            );
+                            }
+                            return null; // to handle the "Logout" case
+                        })
+                    }
+                    </div>
+               }
+
             </div>
            </nav>
             <section><Outlet/></section>
