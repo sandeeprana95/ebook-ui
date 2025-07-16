@@ -8,15 +8,18 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import http from "../util/http"
 import { toast } from "react-toastify"
 import { useRazorpay } from "react-razorpay"
+import { useContext } from "react"
+import Context from "../util/Context"
 
 
 const Home=()=>{
    const navigate = useNavigate()
    const { Razorpay } = useRazorpay()
 
+const {session} = useContext(Context)
 const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
 
-
+ 
 const buyNow = async(item)=>{
     try{
         const {data} = await http.post("/payment/order",{ebookId:item._id})
@@ -33,13 +36,16 @@ const buyNow = async(item)=>{
                         alert("Payment Successful!");
                     },
                     prefill: {
-                        name: "John Doe",
-                        email: "john.doe@example.com",
-                        contact: "9999999999",
+                        name: session?.fullname,
+                        email: session?.email,
+                        contact: session?.mobile,
                     },
                     theme: {
                         color: "#3399cc",
                     },
+                    notes: {
+                        name: session?.fullname
+                    }
                     };
 
                     const rzp = new Razorpay(options);

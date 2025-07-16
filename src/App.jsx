@@ -25,16 +25,20 @@ const App=()=>{
 
   // const { data:session , error:sessionError } = useSWR("/user/session",fetcher)
   const [session,setSession] = useState(null)
-  const [loading,setLoading] = useState(null)
+  const [sessionLoading,setSessionLoading] = useState(null)
 
  const getSession=async()=>{
   try{
-        const user = await http.get("/user/session")
-        setSession(user)
+       setSessionLoading(true)
+        const {data} = await http.get("/user/session")
+        setSession(data)
   }
   catch(err)
   {
     toast.error(err.response? err.response.data.message :err.message)
+  }
+  finally{
+    setSessionLoading(false)
   }
  }
 
@@ -44,7 +48,7 @@ const App=()=>{
 
 
   return(
-    <Context.Provider  value={{session,setSession,loading,setLoading}} >
+    <Context.Provider  value={{session,sessionLoading,setSession,setSessionLoading}} >
         <BrowserRouter>
             <Routes>
                 <Route  element={<Layout />} >

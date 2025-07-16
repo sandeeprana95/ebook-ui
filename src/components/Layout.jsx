@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import Context from "../util/Context.js"
 import http from "../util/http.js"
 import { Outlet, Link, useNavigate} from "react-router-dom"
@@ -7,52 +7,40 @@ import { toast } from "react-toastify"
 const Layout=()=>{
 
     const navigate = useNavigate()
-    const { session , setSession , loading , setLoading } = useContext(Context)
+    const { session ,setSession, sessionLoading , setSessionLoading } = useContext(Context)
+    
+    const [open,setOpen] = useState(false)
 
 
-    const menu= [
-            {
-                label:"Home",
-                href:"/",
-                icon:"ri-home-line text-lg"
-            },
-            {
-                label:"Login",
-                href:"/login",
-                icon:"ri-login-box-line text-lg"
-            },
-            {
-                label:"Signup",
-                href:"/signup",
-                icon:"ri-user-add-line text-lg"
-            },
-            {
-                label:"Logout",
-                href:"/",
-                icon:"ri-logout-circle-r-line text-lg"
+    const menu=[
+        {
+            label:"Dashboard",
+            href:"/app/ebook",
+            icon:"ri-apps-2-line"
+        },
+        {
+            label:"Logout",
+            href:"/app/logout",
+            icon:"ri-logout-circle-r-line"
+        }
+    ]
+
+    const accountMenuClick = async(href)=>{
+        try{
+            console.log(href)
+            if(href === "/app/logout"){
+                await http.get("/user/logout")
+                setSession(null)
+                setSessionLoading(null)
+              return  navigate("/")
             }
-       ]
-
-
-       const logoutSession=async(item)=>{
-
-              if(item.label === "Logout")
-                try{
-                    await http.get("/user/logout")
-                    setSession(null)
-                    navigate("/")
-                }
-                catch(err)
-                {
-                    toast.error(err.response? err.response.data.message : err.message)
-                }
-                finally{
-                    
-                }
-
-       }
-
-
+            navigate(href)
+        }
+        catch(err)
+        {
+            toast.err(err.response? err.response.data.message : err.message)
+        }
+    }
 
     return(  
         <div>
@@ -65,47 +53,45 @@ const Layout=()=>{
                     </div>
                 </Link>
                 </div>
-                { session && <>
-                    <div className="space-x-6 flex">
-                    {
-                        menu.map((item,index)=>(
-                            <Link to={item.href}  onClick={()=>logoutSession(item)}
-                             className="flex items-center gap-1 hover:text-gray-200">
-                                <i className={`${item.icon}`}></i> {item.label}
-                            </Link>
-                        ))
-                    }
-                    </div>
-            
-
-                <div className="md:hidden">
-                <button id="menu-btn" className="text-2xl">
-                    <i className="ri-menu-line"></i>
-                </button>
+               {(!sessionLoading && !session ) &&
+                <div className="flex gap-6 text-whitea text-lg animate__animated animate__fadeIn " >
+                    <Link  to="/login"
+                    className="flex items-center gap-1 hover:text-gray-200">
+                        <i className="ri-login-box-line"></i>Login
+                    </Link>
+                    <Link to="/signup"
+                     className="flex items-center gap-1 hover:text-gray-200">
+                        <i className="ri-user-add-line"></i>Signup
+                    </Link>
                 </div>
-                </>
                }
 
-               { ! session && 
-                 <div className="space-x-6 flex">
-                    {
-                         menu.map((item, index) => {
-                            if (item.label !== "Logout" && item.label !== "Home") {
-                            return (
-                                <Link
-                                key={index}
-                                to={item.href}
-                                className="flex items-center gap-1 hover:text-gray-200"
-                                >
-                                <i className={`${item.icon}`}></i> {item.label}
-                                </Link>
-                            );
-                            }
-                            return null; // to handle the "Logout" case
-                        })
-                    }
+            
+                    {(!sessionLoading && session ) &&
+                <div className="flex items-center relative">
+                    {/* <label className="capitalize font-semibold  text-lg mr-2" ></label> */}
+                    <>
+                    <button  className="text-2xl" onClick={()=>setOpen(!open)} >
+                        <i className="ri-user-line mr-1"></i>{session?.fullname}
+                    </button>
+                    { open &&
+                     <div className="absolute top-8 right-3 bg-white p-2 z-[10] rounded" >
+                       <div className="space-x-6 flex flex-col">
+                         {
+                            menu.map((item,index)=>(
+                            <Link  onClick={()=>accountMenuClick(item.href)}
+                            className="flex items-center text-black gap-1 hover:bg-gray-200 w-full p-1">
+                                <i className={item.icon}></i>{item.label}
+                            </Link>
+                            ))
+                         }
+                   
                     </div>
-               }
+                    </div> 
+                    }
+                    </>
+                </div>
+                }
 
             </div>
            </nav>
