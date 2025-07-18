@@ -20,6 +20,7 @@ import useSWR from "swr"
 import fetcher from "./util/fetcher"
 import { useEffect, useState } from "react"
 import http from "./util/http"
+import axios from "axios"
 
 const App=()=>{
 
@@ -30,11 +31,14 @@ const App=()=>{
  const getSession=async()=>{
   try{
        setSessionLoading(true)
-        const {data} = await http.get("/user/session")
+      
+        // const {data} = await http.get("/user/session")
+        const {data} = await axios.get(`${import.meta.env.VITE_SERVER}/user/session`)
         setSession(data)
   }
   catch(err)
   {
+    console.log(err)
     toast.error(err.response? err.response.data.message :err.message)
   }
   finally{
@@ -51,20 +55,24 @@ const App=()=>{
     <Context.Provider  value={{session,sessionLoading,setSession,setSessionLoading}} >
         <BrowserRouter>
             <Routes>
+                {/* Public web app */}
                 <Route  element={<Layout />} >
                 <Route path="/" element={<Home/>} />
                 </Route>
-
+                
+                {/* User App */}
                 <Route  element={<UserLayout/>} >
-                <Route path="app/ebook" element={<UserEbook/>} />
+                <Route path="/app/ebook" element={<UserEbook/>} />
                 </Route>
 
+                 {/* Admin App */}
                 <Route  element={<AdminLayout/>} >
                 <Route path="admin/dashboard" element={<Dashboard />} />
                 <Route path="admin/settings" element={<Settings/>} />
                 <Route path="admin/ebook" element={<Ebook/>} />
                 </Route>
-
+                
+                {/* Without layout */}
                 <Route path="/login" element={<Login/>} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/otp" element={<Otp />} />

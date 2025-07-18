@@ -1,9 +1,10 @@
 import axios from "axios"
-axios.defaults.baseURL="http://localhost:8080"
+import http from "./http"
 
 const fetcher=async(url)=>{
     try{
-        const {data} = await axios.get(url)
+        
+        const {data} = await http.get(url)
         return data
     }
     catch(err)

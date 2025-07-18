@@ -11,6 +11,7 @@ import { useRazorpay } from "react-razorpay"
 import { useContext } from "react"
 import Context from "../util/Context"
 
+const ENV = import.meta.env
 
 const Home=()=>{
    const navigate = useNavigate()
@@ -19,17 +20,18 @@ const Home=()=>{
 const {session} = useContext(Context)
 const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
 
- 
+console.log(ebook)
+
 const buyNow = async(item)=>{
     try{
         const {data} = await http.post("/payment/order",{ebookId:item._id})
-        console.log(data)
+        console.log("order details" , data)
             const options = {
-                    key: "rzp_test_t847Z4hHUvNlYO",
+                    key: ENV.VITE_RZR_KEY,
                     amount: data.amount, // Amount in paise
                     currency: "INR",
-                    name: "Test Company",
-                    description: "Test Transaction",
+                    name: "Ebook",
+                    description: item.title,
                     order_id: data.id, // Generate order_id on server
                     handler: (response) => {
                         console.log(response);
@@ -44,7 +46,10 @@ const buyNow = async(item)=>{
                         color: "#3399cc",
                     },
                     notes: {
-                        name: session?.fullname
+                        name: session?.fullname,
+                        user:session.id,
+                        ebook:item._id,
+                        discount:item.discount
                     }
                     };
 
@@ -58,6 +63,7 @@ const buyNow = async(item)=>{
                 }
         catch(err)
         {
+            console.log(err + "order error")
             if(err.status === 400)
                 return navigate("/login")
             
@@ -101,7 +107,7 @@ if(ebookErr)
     return(
         <div className="grid lg:grid-cols-4 gap-8 w-10/12 mx-auto py-12" >
             {
-                ebook?.map((item,index)=>(
+               ebook?.map((item,index)=>(
                 <div key={index} className="shadow-xl border border-gray-300" >
                     <img src={item.thumbnail ? item.thumbnail: "https://random-image-pepebigotes.vercel.app/api/random-image" } />
                     <div className="p-3 space-y-1">

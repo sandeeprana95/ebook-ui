@@ -3,7 +3,10 @@ import { Link, useNavigate } from "react-router-dom"
 import axios, { AxiosError } from "axios"
 import { mutate } from "swr"
 import { toast } from "react-toastify"
+import http from "../util/http"
+
 axios.defaults.withCredentials=true
+
 
 const Login=()=>{
     const navigate = useNavigate()
@@ -31,8 +34,8 @@ const Login=()=>{
             email:"sandeep@gmail.com",
             password:"9090"
         }
-
-       const {data} =  await axios.post("http://localhost:8080/user/login",loginInput)
+    
+       const {data} =  await http.post("user/login",loginInput)
        
        toast(data.message,{position:"top-center",type:"success"})
 

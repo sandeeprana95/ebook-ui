@@ -10,6 +10,7 @@ const AdminLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
     useSWR("user/session",fetcher)
 
+
     const navigate = useNavigate()
     const location= useLocation()
 
@@ -197,8 +198,8 @@ const AdminLayout=()=>{
     if(sessionError)
      return(<Navigate to="/login"/>)
 
-    if (session.role !== "admin")
-        return (<Navigate to="/" />)
+    // if (session.role !== "admin")
+    //     return (<Navigate to="/" />)
 
     return(
         <>

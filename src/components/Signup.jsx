@@ -2,8 +2,8 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import axios from "axios"
 import { toast } from 'react-toastify'
+import http from '../util/http'
 
 
 const Signup=()=>{
@@ -16,33 +16,35 @@ const Signup=()=>{
     password:"",
     mobile:""
   }
-  const [inputValue,setInputValue]= useState(model)
+  const [signupForm,setSignupForm]= useState(model)
 
   const handleInput=(e)=>{
         const input = e.target
         const name = input.name
         const value = input.value
-        setInputValue({
-            ...inputValue,
+        setSignupForm({
+            ...signupForm,
             [name] : value
         })
 
     }
 
-  const signupForm=async(e)=>{
+  const signup = async (e)=>{
     try{
         e.preventDefault()
 
-        const {data} = await axios.post("http://localhost:8080/user/signup",inputValue)
+        const {data} = await http.post("user/signup",signupForm)
         toast.success(data.message,{position:"top-center"})
         navigate("/login")
-
     }
     catch(err)
     {
       toast.error(err.response? err.response.data.message : err.message 
         ,{position:"top-center"}
       )
+    }
+    finally{
+      setSignupForm(model)
     }
   }
 
@@ -52,13 +54,13 @@ const Signup=()=>{
         <div className="min-h-screen animate__animated animate__fadeIn flex justify-center items-center ">
             <div className="w-[480px] mx-auto animate__pulse shadow-xl p-2 border border-gray-300 rounded-sm">
             <h1 className="font-semibold text-2xl text-center text-blue-500" >Register Now</h1>
-            <form className="space-y-4" onSubmit={signupForm} >
+            <form className="space-y-4" onSubmit={signup} >
                 <div className="flex flex-col gap-2">
                     <label className="font-medium">Fullname</label>
                     <input
                     type="text"
                     name="fullname"
-                    value={inputValue.fullname}
+                    value={signupForm.fullname}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your email" />
@@ -68,7 +70,7 @@ const Signup=()=>{
                     <input
                     type="email"
                     name="email"
-                    value={inputValue.email}
+                    value={signupForm.email}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your email" />
@@ -78,7 +80,7 @@ const Signup=()=>{
                     <input
                     type={type}
                     name="password"
-                    value={inputValue.password}
+                    value={signupForm.password}
                     onChange={handleInput}
                     className="border border-gray-500 rounded p-3"
                     placeholder="enter your password" />
@@ -99,8 +101,8 @@ const Signup=()=>{
                   <PhoneInput
                     country={'in'}
                     name="mobile"
-                    value={inputValue.mobile}
-                    onChange={(value)=>setInputValue({...inputValue,"mobile":value})}
+                    value={setSignupForm.mobile}
+                    onChange={(value)=>setSignupForm({...signupForm,"mobile":value})}
                     inputStyle={{width:"100%",height:"48.6px",border:"1px solid gray"}}
                     enableSearch
                     />

@@ -25,16 +25,18 @@ const Layout=()=>{
         }
     ]
 
-    const accountMenuClick = async(href)=>{
+    const onAccountMenuClick = async(href)=>{
         try{
-            console.log(href)
             if(href === "/app/logout"){
                 await http.get("/user/logout")
                 setSession(null)
                 setSessionLoading(null)
+                
+                console.log("hello")
               return  navigate("/")
-            }
-            navigate(href)
+            } 
+
+         navigate("/app/ebook")
         }
         catch(err)
         {
@@ -79,10 +81,10 @@ const Layout=()=>{
                        <div className="space-x-6 flex flex-col">
                          {
                             menu.map((item,index)=>(
-                            <Link  onClick={()=>accountMenuClick(item.href)}
+                            <button  onClick={()=>onAccountMenuClick(item.href)}
                             className="flex items-center text-black gap-1 hover:bg-gray-200 w-full p-1">
                                 <i className={item.icon}></i>{item.label}
-                            </Link>
+                            </button>
                             ))
                          }
                    

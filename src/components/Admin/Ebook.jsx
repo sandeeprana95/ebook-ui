@@ -10,12 +10,14 @@ const Ebook=()=>{
     const [open,setOpen] = useState(false)
 
     const {data:ebook,error:ebookError,isLoading:ebookLoading} = useSWR("/ebook",fetcher)
+    const {data:category,error:categoryError,isLoading:categoryLoading} = useSWR("/category",fetcher)
 
     const ebookModel={
         title:"",
         description:"",
         price:"",
-        discount:""
+        discount:"",
+        category:""
     }
 
     const [ebookInput,setEbookInput]=useState(ebookModel)
@@ -105,6 +107,64 @@ const Ebook=()=>{
         }
     }
 
+    const uploadThumbnail=async(e,id)=>{
+        try{
+            const input = e.target
+            const file = input.files[0]
+            const formData = new FormData()
+            formData.append("file",file)
+            const {data} = await http.post("/storage",formData)
+            console.log(data)
+           const res = await http.put(`ebook/${id}`,{thumbnail:data.location})
+           console.log(res.data)
+            mutate("/ebook")
+        }
+        catch(err)
+        {
+           console.log(err)
+           toast.error(err.response? err.response.data.message : err.message)
+        }
+
+    }
+
+
+    const uploadEbook=async(e,id)=>{
+        const toastId = toast.loading("Processing...", {position:"top-center"})
+        try{
+            const input = e.target
+            const file = input.files[0]
+            const formData = new FormData()
+            formData.append("file",file)
+            const {data} = await http.post("/storage",formData)
+            await http.put(`/ebook/${id}?fieldType=array`,{ebook:data.key})
+            mutate("/ebook")
+        }
+        catch(err)
+        {
+            toast.error(err.response ? err.response.data.message : err.message)
+        }
+        finally{
+            toast.done(toastId)
+        }
+    }
+
+    const downloadEbook=async(e)=>{
+        try{
+            const select = e.target
+            const key = select.value
+            if(key === "ebooks")
+                return toast.info("Please select a file to download",{position:"top-center"})
+
+            const {data} = await http.post("/storage/download",{path:key})
+            window.location = data.url
+        }
+        catch(err)
+        {
+            toast.error(err.response ? err.response.data.message : err.message)
+        }
+    }
+
+
     return(
         <div className="space-y-8 animate__animated animate__fadeIn " >
             <button onClick={()=>setOpen(true)}
@@ -116,7 +176,15 @@ const Ebook=()=>{
                 {
                     ebook?.map((item,index)=>(
                         <div key={index} className="shadow-xl" >
-                           <img src="https://random-image-pepebigotes.vercel.app/api/random-image" />
+                            <div className="relative">
+                            <img src= { item.thumbnail ? item.thumbnail : "https://random-image-pepebigotes.vercel.app/api/random-image" } />
+                            <input 
+                              type="file"
+                              accept="image/*"
+                              className="opacity-0 absolute top-0 left-0 w-full h-full"
+                              onChange={(e)=>uploadThumbnail(e,item._id)}
+                            />
+                            </div>
                            <div className="px-4 pt-2 pb-4 border-l border-r border-b">
                             <h1 className="text-[17px] font-medium capitalize mt-3 mb-1"
                             >{item.title}</h1>
@@ -133,7 +201,30 @@ const Ebook=()=>{
                                 <button onClick={()=>deleteEbook(item._id)}
                                  className="bg-red-400 text-white hover:bg-red-500 px-2 py-1 rounded" 
                                 ><i className="ri-delete-bin-line"/></button>
+
+                                 <button className="bg-violet-400 text-white px-2 py-1 rounded relative">
+                                    <i className="ri-add-line"></i>
+                                    <input 
+                                    type="file"
+                                    className="border absolute top-0 left-0 w-full h-full opacity-0"
+                                    onChange={(e)=>uploadEbook(e,item._id)}
+                                    accept=".pdf"
+                                    />
+                                </button>
                                 </div>
+                                {
+                                item.ebook.length === 0 ? 
+                                <label className="text-sm text-gray-500 mt-4 block">No Ebook Uploaded</label>
+                                :
+                                <select className="mt-4 border rounded p-2 w-full" onChange={downloadEbook}>
+                                    <option value="ebooks">Ebooks List</option>
+                                    {
+                                    item.ebook.map((book, bookIndex)=>(
+                                        <option value={book} key={bookIndex}>{book}</option>
+                                    ))
+                                    }
+                                </select>
+                                }
                            </div>
                         </div>
                     ))
@@ -168,7 +259,7 @@ const Ebook=()=>{
                  <div className="grid grid-cols-2 gap-4" >
                  <div className="flex flex-col gap-2 " >
                     <label className="text-sm font-semibold" >Price</label>
-                    <input 
+                    <input type="number"
                     name="price"
                     value={ebookInput.price}
                     onChange={handleEbook}
@@ -177,13 +268,33 @@ const Ebook=()=>{
                  </div>
                  <div className="flex flex-col gap-2 " >
                     <label className="text-sm font-semibold" >Discount</label>
-                    <input 
+                    <input type="number"
                     name="discount"
                     value={ebookInput.discount}
                     onChange={handleEbook}
                     placeholder="enter discount"
                     className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
                  </div>
+                 </div>
+                 <div className="flex flex-col gap-2" >
+                    <label className="text-sm font-semibold">Category</label>
+                    <select
+                    value={ebookInput.category}
+                    onChange={handleEbook}
+                    name="category"
+                    className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600 w-full" required 
+                    placeholder="Category"
+                    >
+                    <option>Select your category</option>
+                        {
+                            category?.map((item,index)=>(
+                                <option key={index} value={item.title} className="uppercase">
+                                {item.title}
+                                </option>
+                            ))
+                        }
+                    </select>
+                    
                  </div>
                  
                  <div className="flex flex-col gap-2" >
@@ -192,7 +303,7 @@ const Ebook=()=>{
                     name="description"
                     value={ebookInput.description}
                     onChange={handleEbook}
-                    rows={6}
+                    rows={3}
                     placeholder="write ebook description here..."
                     className="border border-gray-500 py-3 pl-2 rounded focus:outline-indigo-600" required />
                  </div>
