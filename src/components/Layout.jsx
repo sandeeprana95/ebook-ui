@@ -81,7 +81,7 @@ const Layout=()=>{
                        <div className="space-x-6 flex flex-col">
                          {
                             menu.map((item,index)=>(
-                            <button  onClick={()=>onAccountMenuClick(item.href)}
+                            <button key={index}  onClick={()=>onAccountMenuClick(item.href)}
                             className="flex items-center text-black gap-1 hover:bg-gray-200 w-full p-1">
                                 <i className={item.icon}></i>{item.label}
                             </button>

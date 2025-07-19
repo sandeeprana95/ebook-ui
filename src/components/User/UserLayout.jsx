@@ -5,6 +5,7 @@ import fetcher from "../../util/fetcher"
 import Loader from "../Shared/Loader"
 import axios from "axios"
 import { toast } from "react-toastify"
+import http from "../../util/http"
 
 const UserLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
@@ -18,25 +19,27 @@ const UserLayout=()=>{
 
     const menus=[
         {
-            label:"Dashboard",
-            href:"/admin/dashboard",
-            icon:"ri-apps-2-line"
-        },
-        {
             label:"Ebook",
             href:"/app/ebook",
             icon:"ri-bookmark-line"
         },
         {
-            label:"Settings",
-            href:"/admin/settings",
-            icon:"ri-tools-line"
+            label:"Logout",
+            href:"/app/logout",
+            icon:"ri-logout-circle-r-line"
         }
     ]
 
-    const onMobileNavigate=(href)=>{
-           navigate(href)
-           setMobileWidth(0)
+    const onMobileNavigate=async(href)=>{
+        setMobileWidth(0)
+        if(href === "/app/logout"){
+            await http.get("/user/logout")
+            mutate("/user/session")
+            return navigate("/login")   
+        }
+
+        return navigate(href)
+
     }
 
     const logout=async()=>{
@@ -85,10 +88,7 @@ const UserLayout=()=>{
                                 ><i className={`${item.icon} mr-2`} />{item.label}</button>
                             ))
                         }
-                        <button onClick={logout}
-                                style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-                                className="shadow-2xl py-3 font-semibold hover:text-white"
-                                ><i className="ri-logout-circle-r-line mr-2"/>Logout</button>
+                        
                     </div>
 
                 </aside>

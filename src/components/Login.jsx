@@ -41,8 +41,7 @@ const Login=()=>{
 
         if(data.role === "admin")
         return navigate("/admin/dashboard")
-
-        alert("hello user")
+    
         if(data.role === "user")
         return navigate("/app/ebook")
 

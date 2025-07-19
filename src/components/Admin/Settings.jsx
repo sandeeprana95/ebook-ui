@@ -1,8 +1,9 @@
 import { useState } from "react"
-import axios from "axios"
 import useSWR, { mutate } from "swr"
 import fetcher from "../../util/fetcher"
 import Loader from "../Shared/Loader"
+import http from "../../util/http"
+import { toast } from "react-toastify"
 
 const Settings=()=>{
     const [active,setActive]=useState(0)
@@ -11,23 +12,28 @@ const Settings=()=>{
     const [categoryInput,setCategoryInput]=useState({title:""})
 
      const {data,error,isLoading}= useSWR("/category",fetcher)
-
+     console.log(data)
      const createCategory=async(e)=>{
+        const toastId = toast.loading("processing....")
         try{
-              await axios.post("/category",categoryInput)
-              mutate("/")
+             e.preventDefault()
+              await http.post("/category",categoryInput)
+              mutate("/category")
               setCategoryInput({title:""})
         }
         catch(err)
         {
-            err.response ? console.log(err.response.data.message) : console.log(err.message)
+           toast.error(err.response ? err.response.data.message : err.message)
+        }
+        finally{
+            toast.done(toastId)
         }
 
     }
 
     const deleteCategory=async(id)=>{
         try{
-            await axios.delete(`/category/${id}`)
+            await http.delete(`/category/${id}`)
             mutate("/category")
         }
         catch(err)

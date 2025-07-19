@@ -5,6 +5,7 @@ import fetcher from "../../util/fetcher"
 import Loader from "../Shared/Loader"
 import axios from "axios"
 import { toast } from "react-toastify"
+import http from "../../util/http"
 
 const AdminLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
@@ -32,12 +33,32 @@ const AdminLayout=()=>{
             label:"Settings",
             href:"/admin/settings",
             icon:"ri-tools-line"
+        },
+        {
+            label:"Logout",
+            href:"/user/logout",
+            icon:"ri-logout-circle-r-line"
         }
     ]
+    
 
-    const onMobileNavigate=(href)=>{
+    const onMobileNavigate=async(href)=>{
+       try{
+
+        if(href === "/user/logout"){
+            await http.get("/user/logout")
+            mutate("/user/session")
+            return navigate("/login")
+        }
            navigate(href)
            setMobileWidth(0)
+       } 
+       catch(err)
+       {
+        toast.error(err.response? err.response.data.message : err.message
+            ,{position:"top-center"})
+       }
+
     }
 
     const logout=async()=>{
@@ -86,10 +107,7 @@ const AdminLayout=()=>{
                                 ><i className={`${item.icon} mr-2`} />{item.label}</button>
                             ))
                         }
-                        <button onClick={logout}
-                                style={{background:"linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 133, 1) 50%, rgba(237, 221, 83, 1) 100%)"}}
-                                className="shadow-2xl py-3 font-semibold hover:text-white"
-                                ><i className="ri-logout-circle-r-line mr-2"/>Logout</button>
+                       
                     </div>
 
                 </aside>
@@ -198,8 +216,8 @@ const AdminLayout=()=>{
     if(sessionError)
      return(<Navigate to="/login"/>)
 
-    // if (session.role !== "admin")
-    //     return (<Navigate to="/" />)
+    if (session.role !== "admin")
+        return (<Navigate to="/" />)
 
     return(
         <>

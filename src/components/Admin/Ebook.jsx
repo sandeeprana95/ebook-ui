@@ -177,7 +177,9 @@ const Ebook=()=>{
                     ebook?.map((item,index)=>(
                         <div key={index} className="shadow-xl" >
                             <div className="relative">
-                            <img src= { item.thumbnail ? item.thumbnail : "https://random-image-pepebigotes.vercel.app/api/random-image" } />
+                            <img src= { item.thumbnail ? item.thumbnail : "https://random-image-pepebigotes.vercel.app/api/random-image" } 
+                             className="w-full h-60"
+                            />
                             <input 
                               type="file"
                               accept="image/*"

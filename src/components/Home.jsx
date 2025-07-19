@@ -63,7 +63,7 @@ const buyNow = async(item)=>{
                 }
         catch(err)
         {
-            console.log(err + "order error")
+            // console.log(err + "order error")
             if(err.status === 400)
                 return navigate("/login")
             
@@ -109,7 +109,9 @@ if(ebookErr)
             {
                ebook?.map((item,index)=>(
                 <div key={index} className="shadow-xl border border-gray-300" >
-                    <img src={item.thumbnail ? item.thumbnail: "https://random-image-pepebigotes.vercel.app/api/random-image" } />
+                    <img src={item.thumbnail ? item.thumbnail: "https://random-image-pepebigotes.vercel.app/api/random-image" }
+                    className="h-60 w-full"
+                    />
                     <div className="p-3 space-y-1">
                     <h1 className="text-[17px] font-medium capitalize">{item.title}</h1>
                     <div className="flex gap-2 items-center" >
