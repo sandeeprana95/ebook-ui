@@ -1,21 +1,25 @@
 import useSWR from "swr"
 import fetcher from "../../util/fetcher.js"
-import { useState } from "react"
+import { createElement, useState } from "react"
 import Loader from "../Shared/Loader.jsx"
 import { toast } from "react-toastify"
 import http from "../../util/http.js"
 import { Link } from "react-router-dom"
 
 const Ebook=()=>{
-const [pdf,setPdf] = useState("/pdf/sample.pdf")
 const {data:ebook , error:ebookErr , isLoading } = useSWR("/order",fetcher)
 
 
 const showPdf=async(ebooks)=>{
   try{
        const path = ebooks[ebooks.length-1]
-       const {data} = await http.post("/storage/download",{path})
-       alert(data.url)
+       const {data} = await http.post("/storage/download?type=file",{path},{responseType:"blob"})
+       const url = URL.createObjectURL(data)
+       const a = document.createElement("a")
+       a.href = url
+       a.target = "_blank"
+       a.click()
+       a.remove()
   }
   catch(err)
   {
@@ -40,9 +44,7 @@ if(ebookErr)
 
 
 return(
-    <div className="grid grid-cols-12 gap-8" >
-        
-        <div className="col-span-4 space-y-4">
+    <div className="grid lg:grid-cols-4 gap-8" >
            {
               ebook.length === 0 &&
                 <div className="flex flex-col" >
@@ -55,16 +57,21 @@ return(
             ebook?.map((item,index)=>(
                 <button key={index} onClick={()=>showPdf(item.ebook.ebook)} className="w-full" >
                     <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-lg w-full"  />
+                    <div className="p-2">
+                        <div className="w-full flex justify-between mt-3 mb-2">
+                            <h1 className="capitalize font-medium" >{item.ebook.title}</h1>
+                            <button className="bg-gray-100 border rounded px-2 text-xs py-1 capitalize" >{item.ebook.category}</button>
+                        </div>
+                        <div className="w-full flex gap-3" >
+                            <h1 className="capitalize font-medium">₹2000</h1>
+                            <del>₹2000</del>
+                            <label className="text-gray-500" >(50% discount)</label>
+                        </div>
+                    </div>
                 </button>
+                
             ))
         }
-        </div>
-        <div className="col-span-8 bg-blue-300">
-            <iframe
-            src={pdf}  
-             className="w-full h-[600px]"
-            />
-        </div>
 
         
     </div>
