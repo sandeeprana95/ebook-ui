@@ -57,7 +57,7 @@ return(
             ebook?.map((item,index)=>(
                 <button key={index} onClick={()=>showPdf(item.ebook.ebook)} className="w-full" >
                     <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-lg w-full"  />
-                    <div className="p-2">
+                    <div >
                         <div className="w-full flex justify-between mt-3 mb-2">
                             <h1 className="capitalize font-medium" >{item.ebook.title}</h1>
                             <button className="bg-gray-100 border rounded px-2 text-xs py-1 capitalize" >{item.ebook.category}</button>
