@@ -25,7 +25,7 @@ console.log(ebook)
 const buyNow = async(item)=>{
     try{
         const {data} = await http.post("/payment/order",{ebookId:item._id})
-        console.log("order details" , data)
+
             const options = {
                     key: ENV.VITE_RZR_KEY,
                     amount: data.amount, // Amount in paise
@@ -36,6 +36,7 @@ const buyNow = async(item)=>{
                     handler: (response) => {
                         console.log(response);
                         alert("Payment Successful!");
+                        navigate("/app/ebook")
                     },
                     prefill: {
                         name: session?.fullname,
@@ -57,7 +58,7 @@ const buyNow = async(item)=>{
                     rzp.open();
 
                     rzp.on("payment.failed",(res)=>{
-                           console.log(res)
+                           alert(res)
                     })
 
                 }

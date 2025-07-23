@@ -1,10 +1,12 @@
+import moment from "moment"
 import useSWR from "swr"
 import fetcher from "../../util/fetcher.js"
-import { createElement, useState } from "react"
 import Loader from "../Shared/Loader.jsx"
 import { toast } from "react-toastify"
 import http from "../../util/http.js"
 import { Link } from "react-router-dom"
+import discount from "../../util/discount.js"
+
 
 const Ebook=()=>{
 const {data:ebook , error:ebookErr , isLoading } = useSWR("/order",fetcher)
@@ -55,20 +57,22 @@ return(
            } 
         {
             ebook?.map((item,index)=>(
-                <button key={index} onClick={()=>showPdf(item.ebook.ebook)} className="w-full" >
-                    <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-lg w-full"  />
-                    <div >
+                <div key={index} onClick={()=>showPdf(item.ebook.ebook)} className="w-full border border-gray-300 rounded-md shadow-lg" >
+                    <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-lg w-full max-sm:h-[300px] sm:h-65"  />
+                    <div className="px-4 pb-2" >
                         <div className="w-full flex justify-between mt-3 mb-2">
                             <h1 className="capitalize font-medium" >{item.ebook.title}</h1>
                             <button className="bg-gray-100 border rounded px-2 text-xs py-1 capitalize" >{item.ebook.category}</button>
                         </div>
                         <div className="w-full flex gap-3" >
-                            <h1 className="capitalize font-medium">₹2000</h1>
-                            <del>₹2000</del>
-                            <label className="text-gray-500" >(50% discount)</label>
+                            <h1 className="capitalize font-medium">₹{Math.round(discount(item.amount,item.discount))}</h1>
+                            <del>₹{Math.round(item.amount)}</del>
+                            <label className="text-gray-500" >({item.discount}% discount)</label>
                         </div>
+                        <label className="text-xs font-semibold text-zinc-400 block text-left mt-2" >{moment(item.createdAt).format("MMM DD YYYY hh:mm A")}</label>
                     </div>
-                </button>
+                    {console.log(item)}
+                </div>
                 
             ))
         }
