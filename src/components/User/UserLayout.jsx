@@ -55,6 +55,23 @@ const UserLayout=()=>{
         }
     }
 
+    const uploadProfilePic=async(e)=>{
+      try{
+           const input = e.target
+           const file = input.files[0]
+           const formData = new FormData()
+           formData.append("pic",file)
+
+           const {data} = await http.post("/storage/upload-pic",formData)
+           const {data:profilePic}= await http.put(`/user/update-image/${session.id}`,{image:data.location}) 
+           toast.success(profilePic.message,"top-center")
+           mutate("/user/session")
+      }
+      catch(err){
+        toast.error(err.response? err.response.data.message : err.message)
+      }
+    }
+
     const Mobile=()=>{
         return(
                 <div className="h-[3000px] lg:hidden block" >
@@ -70,9 +87,14 @@ const UserLayout=()=>{
                     className="flex flex-col items-center justify-center my-2"
                     >
                         <button
-                        className="w-16 h-16 bg-slate-100 rounded-full"
+                        className="w-16 h-16 bg-slate-100 rounded-full relative"
                         >
                             <i className="ri-user-fill text-4xl  " />
+                            <input onChange={uploadProfilePic}
+                            type="file"
+                            accept="image/*"
+                            className="top-0 left-0 absolute w-full h-full rounded-full opacity-0"
+                            />
                         </button>
                             <h1 className="text-lg font-medium mt-2" >{session?.fullname}</h1>
                             <label className="text-gray-500" >{session?.email}</label>
@@ -125,9 +147,14 @@ const UserLayout=()=>{
             className="flex flex-col items-center justify-center my-2"
             >
                 <button
-                className="w-16 h-16 bg-slate-100 rounded-full"
+                className="w-16 h-16 bg-slate-100 rounded-full relative"
                 >
                     <i className="ri-user-fill text-4xl  " />
+                    <input onChange={uploadProfilePic}
+                      type="file"
+                      accept="image/*"
+                      className="absolute top-0 left-0 w-full h-full rounded-full opacity-0"
+                    />
                 </button>
                     <h1 className="text-lg font-medium mt-2" >{session?.fullname}</h1>
                     <label className="text-gray-500" >{session?.email}</label>

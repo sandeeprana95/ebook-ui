@@ -58,7 +58,7 @@ return(
         {
             ebook?.map((item,index)=>(
                 <div key={index} onClick={()=>showPdf(item.ebook.ebook)} className="w-full border border-gray-300 rounded-md shadow-lg" >
-                    <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-lg w-full max-sm:h-[300px] sm:h-65"  />
+                    <img src={item.ebook.thumbnail ? item.ebook.thumbnail : "/images/dummy.jpg" } className="rounded-t-md w-full max-sm:h-[300px] sm:h-65"  />
                     <div className="px-4 pb-2" >
                         <div className="w-full flex justify-between mt-3 mb-2">
                             <h1 className="capitalize font-medium" >{item.ebook.title}</h1>

@@ -21,6 +21,7 @@ import fetcher from "./util/fetcher"
 import { useEffect, useState } from "react"
 import http from "./util/http"
 import axios from "axios"
+import Orders from "./components/Admin/Orders"
 
 const App=()=>{
 
@@ -29,26 +30,26 @@ const App=()=>{
   const [sessionLoading,setSessionLoading] = useState(null)
 
  const getSession=async()=>{
-  try{
-       setSessionLoading(true)
-      
-        // const {data} = await http.get("/user/session")
-        const {data} = await axios.get(`${import.meta.env.VITE_SERVER}/user/session`)
-        setSession(data)
+      try{
+          setSessionLoading(true)
+          
+            // const {data} = await http.get("/user/session")
+            const {data} = await axios.get(`${import.meta.env.VITE_SERVER}/user/session`)
+            setSession(data)
+      }
+      catch(err)
+      {
+        console.log(err)
+        toast.error(err.response? err.response.data.message :err.message)
+      }
+      finally{
+        setSessionLoading(false)
+      }
   }
-  catch(err)
-  {
-    console.log(err)
-    toast.error(err.response? err.response.data.message :err.message)
-  }
-  finally{
-    setSessionLoading(false)
-  }
- }
 
-  useEffect(()=>{
-    getSession()
-  },[])
+    useEffect(()=>{
+      getSession()
+    },[])
 
 
   return(
@@ -70,6 +71,7 @@ const App=()=>{
                 <Route path="admin/dashboard" element={<Dashboard />} />
                 <Route path="admin/settings" element={<Settings/>} />
                 <Route path="admin/ebook" element={<Ebook/>} />
+                <Route path="admin/orders" element={<Orders/>}/>
                 </Route>
                 
                 {/* Without layout */}
