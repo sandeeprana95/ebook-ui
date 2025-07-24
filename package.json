@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
     "animate.css": "^4.1.1",
+    "antd": "^5.26.6",
     "axios": "^1.10.0",
     "font-awesome": "^4.7.0",
     "moment": "^2.30.1",
