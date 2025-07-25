@@ -6,8 +6,10 @@ import Loader from "../Shared/Loader"
 import axios from "axios"
 import { toast } from "react-toastify"
 import http from "../../util/http"
+const ENV = import.meta.env
 
 const AdminLayout=()=>{
+    useSWR("/user/session",fetcher,{refreshInterval:ENV.VITE_REFRESH_INTERVEL})
     const {data:session,error:sessionError,isLoading:sessionLoading}=
     useSWR("user/session",fetcher)
 
