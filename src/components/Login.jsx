@@ -97,6 +97,10 @@ const Login=()=>{
                 <label className="font-[300]" >I Don't have an Account ?</label>
                 <Link to="/signup" className="font-semibold text-blue-500 hover:underline" >Register Now</Link>
             </div>
+            <div className="space-x-2 mt-3" >
+                <Link to="/forgot-password"
+                 className="font-[300] font-semibold text-rose-400" >Forgot Password ?</Link>
+            </div>
 
             </div>
         </div>

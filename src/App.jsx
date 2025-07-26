@@ -22,6 +22,7 @@ import { useEffect, useState } from "react"
 import http from "./util/http"
 import axios from "axios"
 import Orders from "./components/Admin/Orders"
+import ForgotPassword from "./components/forgotPassword"
 
 const App=()=>{
 
@@ -77,6 +78,7 @@ const App=()=>{
                 {/* Without layout */}
                 <Route path="/login" element={<Login/>} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/forgot-password" element={<ForgotPassword/>} />
                 <Route path="/otp" element={<Otp />} />
                 <Route path="*" element={<NotFound/>} />
              </Routes>
