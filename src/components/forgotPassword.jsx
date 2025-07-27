@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../util/http';
 
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
           </button>
 
           <Link
-            href="/login"
+            to="/login"
             className="text-blue-600 text-sm text-center mt-4 hover:underline"
           >
             Back to Login
