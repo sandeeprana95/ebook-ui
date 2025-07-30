@@ -18,7 +18,9 @@ const Home=()=>{
    const { Razorpay } = useRazorpay()
 
 const {session} = useContext(Context)
+
 const { data:ebook , error:ebookErr , isLoading:ebookLoading } = useSWR("/ebook",fetcher)
+
 
 console.log(ebook)
 

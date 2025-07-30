@@ -40,10 +40,9 @@ const Login=()=>{
        toast(data.message,{position:"top-center",type:"success"})
 
         if(data.role === "admin")
-        return navigate("/admin/dashboard")
+        return window.location = "/admin/dashboard"
     
-        if(data.role === "user")
-        return navigate("/app/ebook")
+        return window.location = "/app/ebook"
 
     }
     catch(err)

@@ -15,7 +15,7 @@ const Layout=()=>{
     const menu=[
         {
             label:"Dashboard",
-            href:"/app/ebook",
+            href:session?.role === "user" ? "/app/ebook" : "/admin/ebook",
             icon:"ri-apps-2-line"
         },
         {
@@ -36,7 +36,7 @@ const Layout=()=>{
               return  navigate("/")
             } 
 
-         navigate("/app/ebook")
+         navigate(href)
         }
         catch(err)
         {

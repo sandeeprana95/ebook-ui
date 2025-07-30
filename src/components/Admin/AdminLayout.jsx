@@ -13,7 +13,6 @@ const AdminLayout=()=>{
     const {data:session,error:sessionError,isLoading:sessionLoading}=
     useSWR("user/session",fetcher)
 
-
     const navigate = useNavigate()
     const location= useLocation()
 

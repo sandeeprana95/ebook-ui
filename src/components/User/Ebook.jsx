@@ -11,6 +11,7 @@ import discount from "../../util/discount.js"
 const Ebook=()=>{
 const {data:ebook , error:ebookErr , isLoading } = useSWR("/order",fetcher)
 
+console.log(ebook)
 
 const showPdf=async(ebooks)=>{
   try{
@@ -71,7 +72,6 @@ return(
                         </div>
                         <label className="text-xs font-semibold text-zinc-400 block text-left mt-2" >{moment(item.createdAt).format("MMM DD YYYY hh:mm A")}</label>
                     </div>
-                    {console.log(item)}
                 </div>
                 
             ))

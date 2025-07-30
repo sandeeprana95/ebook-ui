@@ -114,9 +114,7 @@ const Ebook=()=>{
             const formData = new FormData()
             formData.append("file",file)
             const {data} = await http.post("/storage",formData)
-            console.log(data)
            const res = await http.put(`ebook/${id}`,{thumbnail:data.location})
-           console.log(res.data)
             mutate("/ebook")
         }
         catch(err)
