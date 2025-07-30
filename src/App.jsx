@@ -22,7 +22,7 @@ import { useEffect, useState } from "react"
 import http from "./util/http"
 import axios from "axios"
 import Orders from "./components/Admin/Orders"
-import ForgotPassword from "./components/temp"
+import ForgotPassword from "./components/ForgotPassword"
 
 const App=()=>{
 
